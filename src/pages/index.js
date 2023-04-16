@@ -74,7 +74,7 @@ export default function Home() {
               2.4km Run Time Calculator
             </h1>
             <h2 className="text-xl font-bold mb-4">
-              Enter your target 2.4km run time:
+              Enter your 2.4km run time:
             </h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-5">
