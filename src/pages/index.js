@@ -1,10 +1,14 @@
-import Head from 'next/head';
-import { useState } from 'react';
+import Head from "next/head";
+import { useState } from "react";
 
 export default function Home() {
-  const [minutes, setMinutes] = useState('');
-  const [seconds, setSeconds] = useState('');
+  const [minutes, setMinutes] = useState("");
+  const [seconds, setSeconds] = useState("");
   const [lapTimes, setLapTimes] = useState([]);
+  const [criticalVelocityPace, setCriticalVelocityPace] = useState(null);
+  const [vo2MaxPace, setVo2MaxPace] = useState(null);
+  const [easyPace, setEasyPace] = useState(null);
+  const [thresholdPace, setThresholdPace] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -20,6 +24,38 @@ export default function Home() {
     }
 
     setLapTimes(cumulativeLapTimes);
+
+    const paceMetersPerSecond = 2400 / totalTimeInSeconds;
+    const criticalVelocityPace = paceMetersPerSecond / 1.08;
+    const pacePerKmInSeconds = 1000 / criticalVelocityPace;
+    const pacePerKmMinutes = Math.floor(pacePerKmInSeconds / 60);
+    const pacePerKmSeconds = Math.round(pacePerKmInSeconds % 60);
+    const vo2MaxMetresPerSecond = 1000 / paceMetersPerSecond;
+    const vo2MaxPerKmMinutes = Math.floor(vo2MaxMetresPerSecond / 60);
+    const vo2MaxPerKmSeconds = Math.round(vo2MaxMetresPerSecond % 60);
+
+    const easyPace = paceMetersPerSecond * 0.7;
+    const easyPaceMetresPerSecond = 1000 / easyPace;
+    const easyPacePerKmMinutes = Math.floor(easyPaceMetresPerSecond / 60);
+    const easyPacePerKmSeconds = Math.round(easyPaceMetresPerSecond % 60);
+
+    const threshold = paceMetersPerSecond * 0.97;
+    const thresholdMetresPerSecond = 1000 / threshold;
+    const thresholdPerKmMinutes = Math.floor(thresholdMetresPerSecond / 60);
+    const thresholdPerKmSeconds = Math.round(thresholdMetresPerSecond % 60);
+    setCriticalVelocityPace({
+      minutes: pacePerKmMinutes,
+      seconds: pacePerKmSeconds,
+    });
+    setVo2MaxPace({ minutes: vo2MaxPerKmMinutes, seconds: vo2MaxPerKmSeconds });
+    setEasyPace({
+      minutes: easyPacePerKmMinutes,
+      seconds: easyPacePerKmSeconds,
+    });
+    setThresholdPace({
+      minutes: thresholdPerKmMinutes,
+      seconds: thresholdPerKmSeconds,
+    });
   };
 
   return (
@@ -34,11 +70,17 @@ export default function Home() {
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-            <h1 className="text-2xl font-bold mb-4">2.4km Run Time Calculator</h1>
-            <h2 className="text-xl font-bold mb-4">Enter your target 2.4km run time:</h2>
+            <h1 className="text-2xl font-bold mb-4">
+              2.4km Run Time Calculator
+            </h1>
+            <h2 className="text-xl font-bold mb-4">
+              Enter your target 2.4km run time:
+            </h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-5">
-                <label htmlFor="minutes" className="block mb-2">Minutes:</label>
+                <label htmlFor="minutes" className="block mb-2">
+                  Minutes:
+                </label>
                 <input
                   type="number"
                   id="minutes"
@@ -50,7 +92,9 @@ export default function Home() {
                 />
               </div>
               <div className="mb-5">
-                <label htmlFor="seconds" className="block mb-2">Seconds:</label>
+                <label htmlFor="seconds" className="block mb-2">
+                  Seconds:
+                </label>
                 <input
                   type="number"
                   id="seconds"
@@ -69,25 +113,49 @@ export default function Home() {
               </button>
             </form>
             {lapTimes.length > 0 && (
-            <div className="mt-6">
-              <h2 className="text-xl font-bold mb-4">Cumulative Lap Times:</h2>
-              <ul className="list-disc pl-5">
-                {lapTimes.map(({ lap, time }) => {
-                  const minutes = Math.floor(time / 60);
-                  const seconds = Math.round(time % 60);
-                  return (
-                    <li key={lap}>
-                      Lap {lap}: {minutes} min {seconds} sec
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-)}
+              <div className="mt-6">
+                <h2 className="text-xl font-bold mb-4">
+                  Cumulative Lap Times:
+                </h2>
+                <ul className="list-disc pl-5">
+                  {lapTimes.map(({ lap, time }) => {
+                    const minutes = Math.floor(time / 60);
+                    const seconds = Math.round(time % 60);
+                    return (
+                      <li key={lap}>
+                        Lap {lap}: {minutes} min {seconds} sec
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+            {criticalVelocityPace &&
+              vo2MaxPace &&
+              easyPace &&
+              thresholdPace && (
+                <div className="mt-6">
+                  <h2 className="text-xl font-bold mb-4">
+                    Training Paces (per km):
+                  </h2>
+                  <p className="font-bold mb-2 mt-4">Easy Pace:</p>
+                  {easyPace.minutes} min {easyPace.seconds} sec
+                  <p className="font-bold mb-2 mt-4">Critical Velocity Pace:</p>
+                  <p>
+                    {criticalVelocityPace.minutes} min{" "}
+                    {criticalVelocityPace.seconds} sec
+                  </p>
+                  <p className="font-bold mb-2 mt-4">Threshold Pace:</p>
+                  {thresholdPace.minutes} min {thresholdPace.seconds} sec
+                  <p className="font-bold mb-2 mt-4">Vo2 Max / 2.4km Pace:</p>
+                  <p>
+                    {vo2MaxPace.minutes} min {vo2MaxPace.seconds} sec
+                  </p>
+                </div>
+              )}
           </div>
         </div>
       </main>
     </>
   );
-  ;
 }
