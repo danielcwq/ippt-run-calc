@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { useState } from "react";
+import {Analaytics} from '@vercel/analytics/react'
 
 export default function Home() {
   const [minutes, setMinutes] = useState("");
@@ -60,6 +61,7 @@ export default function Home() {
 
   return (
     <>
+    <Analaytics/>
       <Head>
         <title>2.4km Run Time Tracker</title>
         <meta name="description" content="2.4km Run Time Tracker App" />
