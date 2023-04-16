@@ -34,12 +34,12 @@ export default function Home() {
     const vo2MaxPerKmMinutes = Math.floor(vo2MaxMetresPerSecond / 60);
     const vo2MaxPerKmSeconds = Math.round(vo2MaxMetresPerSecond % 60);
 
-    const easyPace = paceMetersPerSecond * 0.7;
+    const easyPace = criticalVelocityPace * 0.7;
     const easyPaceMetresPerSecond = 1000 / easyPace;
     const easyPacePerKmMinutes = Math.floor(easyPaceMetresPerSecond / 60);
     const easyPacePerKmSeconds = Math.round(easyPaceMetresPerSecond % 60);
 
-    const threshold = paceMetersPerSecond * 0.97;
+    const threshold = criticalVelocityPace * 0.97;
     const thresholdMetresPerSecond = 1000 / threshold;
     const thresholdPerKmMinutes = Math.floor(thresholdMetresPerSecond / 60);
     const thresholdPerKmSeconds = Math.round(thresholdMetresPerSecond % 60);
