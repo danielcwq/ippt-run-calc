@@ -61,106 +61,106 @@ export default function Home() {
 
   return (
     <>
-    
+
       <Head>
         <title>2.4km Run Time Tracker</title>
         <meta name="description" content="2.4km Run Time Tracker App" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body>
-        <main className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-        <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-          <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-            <h1 className="text-2xl font-bold mb-4">
-              2.4km Run Time Calculator
+        <main className="min-h-screen grid place-items-center md:pl-6">
+          <div className="relative w-full max-w-md py-3">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+            <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+              <h1 className="text-2xl font-bold mb-4">
+                2.4km Run Time Calculator
             </h1>
-            <h2 className="text-xl font-bold mb-4">
-              Enter your 2.4km run time:
+              <h2 className="text-xl font-bold mb-4">
+                Enter your 2.4km run time:
             </h2>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-5">
-                <label htmlFor="minutes" className="block mb-2">
-                  Minutes:
+              <form onSubmit={handleSubmit}>
+                <div className="mb-5">
+                  <label htmlFor="minutes" className="block mb-2">
+                    Minutes:
                 </label>
-                <input
-                  type="number"
-                  id="minutes"
-                  name="minutes"
-                  value={minutes}
-                  onChange={(e) => setMinutes(e.target.value)}
-                  className="w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                  required
-                />
-              </div>
-              <div className="mb-5">
-                <label htmlFor="seconds" className="block mb-2">
-                  Seconds:
+                  <input
+                    type="number"
+                    id="minutes"
+                    name="minutes"
+                    value={minutes}
+                    onChange={(e) => setMinutes(e.target.value)}
+                    className="w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    required
+                  />
+                </div>
+                <div className="mb-5">
+                  <label htmlFor="seconds" className="block mb-2">
+                    Seconds:
                 </label>
-                <input
-                  type="number"
-                  id="seconds"
-                  name="seconds"
-                  value={seconds}
-                  onChange={(e) => setSeconds(e.target.value)}
-                  className="w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full px-3 py-4 text-white bg-blue-500 hover:bg-blue-600 rounded-md focus:bg-blue-600 focus:outline-none"
-              >
-                Calculate Cumulative Lap Times
+                  <input
+                    type="number"
+                    id="seconds"
+                    name="seconds"
+                    value={seconds}
+                    onChange={(e) => setSeconds(e.target.value)}
+                    className="w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full px-3 py-4 text-white bg-blue-500 hover:bg-blue-600 rounded-md focus:bg-blue-600 focus:outline-none"
+                >
+                  Calculate Cumulative Lap Times
               </button>
-            </form>
-            {lapTimes.length > 0 && (
-              <div className="mt-6">
-                <h2 className="text-xl font-bold mb-4">
-                  Cumulative Lap Times:
-                </h2>
-                <ul className="list-disc pl-5">
-                  {lapTimes.map(({ lap, time }) => {
-                    const minutes = Math.floor(time / 60);
-                    const seconds = Math.round(time % 60);
-                    return (
-                      <li key={lap}>
-                        Lap {lap}: {minutes} min {seconds} sec
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
-            {criticalVelocityPace &&
-              vo2MaxPace &&
-              easyPace &&
-              thresholdPace && (
+              </form>
+              {lapTimes.length > 0 && (
                 <div className="mt-6">
                   <h2 className="text-xl font-bold mb-4">
-                    Training Paces (per km):
-                  </h2>
-                  <p className="font-bold mb-2 mt-4">Easy Pace:</p>
-                  {easyPace.minutes} min {easyPace.seconds} sec
-                  <p className="font-bold mb-2 mt-4">Critical Velocity Pace:</p>
-                  <p>
-                    {criticalVelocityPace.minutes} min{" "}
-                    {criticalVelocityPace.seconds} sec
-                  </p>
-                  <p className="font-bold mb-2 mt-4">Threshold Pace:</p>
-                  {thresholdPace.minutes} min {thresholdPace.seconds} sec
-                  <p className="font-bold mb-2 mt-4">Vo2 Max / 2.4km Pace:</p>
-                  <p>
-                    {vo2MaxPace.minutes} min {vo2MaxPace.seconds} sec
-                  </p>
+                    Cumulative Lap Times:
+                </h2>
+                  <ul className="list-disc pl-5">
+                    {lapTimes.map(({ lap, time }) => {
+                      const minutes = Math.floor(time / 60);
+                      const seconds = Math.round(time % 60);
+                      return (
+                        <li key={lap}>
+                          Lap {lap}: {minutes} min {seconds} sec
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
               )}
+              {criticalVelocityPace &&
+                vo2MaxPace &&
+                easyPace &&
+                thresholdPace && (
+                  <div className="mt-6">
+                    <h2 className="text-xl font-bold mb-4">
+                      Training Paces (per km):
+                  </h2>
+                    <p className="font-bold mb-2 mt-4">Easy Pace:</p>
+                    {easyPace.minutes} min {easyPace.seconds} sec
+                    <p className="font-bold mb-2 mt-4">Critical Velocity Pace:</p>
+                    <p>
+                      {criticalVelocityPace.minutes} min{" "}
+                      {criticalVelocityPace.seconds} sec
+                  </p>
+                    <p className="font-bold mb-2 mt-4">Threshold Pace:</p>
+                    {thresholdPace.minutes} min {thresholdPace.seconds} sec
+                    <p className="font-bold mb-2 mt-4">Vo2 Max / 2.4km Pace:</p>
+                    <p>
+                      {vo2MaxPace.minutes} min {vo2MaxPace.seconds} sec
+                  </p>
+                  </div>
+                )}
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
       </body>
-      
+
     </>
   );
 }
