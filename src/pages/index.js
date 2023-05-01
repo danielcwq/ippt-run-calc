@@ -65,10 +65,10 @@ export default function Home() {
       <Head>
         <title>2.4km Run Time Tracker</title>
         <meta name="description" content="2.4km Run Time Tracker App" />
-        <meta name="viewport" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <body>
+      
         <main className="min-h-screen grid place-items-center md:pl-6">
           <div className="relative w-full max-w-md py-3">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
@@ -159,7 +159,6 @@ export default function Home() {
             </div>
           </div>
         </main>
-      </body>
 
     </>
   );
