@@ -96,7 +96,7 @@ export default function Home() {
 
       <main>
         <div className="min-h-screen grid place-items-center">
-          <div className="relative w-full max-w-md">
+          <div className="relative w-full max-w-md p-8">
             <h1 className="text-2xl font-bold mb-4">All-in-one 2.4km App 🏃‍♂️</h1>
             <p className="mb-4">
               {" "}
