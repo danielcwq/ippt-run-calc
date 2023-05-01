@@ -1,7 +1,6 @@
 import Head from "next/head";
 import { useState } from "react";
 
-
 export default function Home() {
   const [minutes, setMinutes] = useState("");
   const [seconds, setSeconds] = useState("");
@@ -10,21 +9,13 @@ export default function Home() {
   const [vo2MaxPace, setVo2MaxPace] = useState(null);
   const [easyPace, setEasyPace] = useState(null);
   const [thresholdPace, setThresholdPace] = useState(null);
+  const [tempoPace, setTempoPace] = useState(null);
+  const [showPaces, setShowPaces] = useState(false);
+  const [showLapTimes, setShowLapTimes] = useState(false); // New state for managing the visibility of cumulative lap times
+  const [showTips, setShowTips] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const calculatePaces = () => {
     const totalTimeInSeconds = parseInt(minutes) * 60 + parseInt(seconds);
-
-    const lapCount = 6;
-    const cumulativeLapTimes = [];
-    let cumulativeTime = 0;
-
-    for (let i = 1; i <= lapCount; i++) {
-      cumulativeTime += totalTimeInSeconds / lapCount;
-      cumulativeLapTimes.push({ lap: i, time: cumulativeTime });
-    }
-
-    setLapTimes(cumulativeLapTimes);
 
     const paceMetersPerSecond = 2400 / totalTimeInSeconds;
     const criticalVelocityPace = paceMetersPerSecond / 1.08;
@@ -44,6 +35,12 @@ export default function Home() {
     const thresholdMetresPerSecond = 1000 / threshold;
     const thresholdPerKmMinutes = Math.floor(thresholdMetresPerSecond / 60);
     const thresholdPerKmSeconds = Math.round(thresholdMetresPerSecond % 60);
+
+    const tempo = criticalVelocityPace * 0.9;
+    const tempoMetresPerSecond = 1000 / tempo;
+    const tempoPerKmMinutes = Math.floor(tempoMetresPerSecond / 60);
+    const tempoPerKmSeconds = Math.round(tempoMetresPerSecond % 60);
+
     setCriticalVelocityPace({
       minutes: pacePerKmMinutes,
       seconds: pacePerKmSeconds,
@@ -57,69 +54,106 @@ export default function Home() {
       minutes: thresholdPerKmMinutes,
       seconds: thresholdPerKmSeconds,
     });
+    setTempoPace({ minutes: tempoPerKmMinutes, seconds: tempoPerKmSeconds });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    calculatePaces();
+
+    const totalTimeInSeconds = parseInt(minutes) * 60 + parseInt(seconds);
+
+    const lapCount = 6;
+    const cumulativeLapTimes = [];
+    let cumulativeTime = 0;
+
+    for (let i = 1; i <= lapCount; i++) {
+      cumulativeTime += totalTimeInSeconds / lapCount;
+      cumulativeLapTimes.push({ lap: i, time: cumulativeTime });
+    }
+
+    setLapTimes(cumulativeLapTimes);
+    setShowLapTimes(true);
+    setShowPaces(false);
+    setShowTips(true);
   };
 
+  const handleShowPaces = () => {
+    calculatePaces();
+    setShowPaces(true);
+    setShowLapTimes(false);
+  };
+  const toggleTips = () => {
+    setShowTips(!showTips);
+  };
   return (
     <>
-
       <Head>
         <title>2.4km Run Time Tracker</title>
         <meta name="description" content="2.4km Run Time Tracker App" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
-        <main className="min-h-screen grid place-items-center md:pl-6">
-          <div className="relative w-full max-w-md py-3">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-            <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-              <h1 className="text-2xl font-bold mb-4">
-                2.4km Run Time Calculator
-            </h1>
-              <h2 className="text-xl font-bold mb-4">
-                Enter your 2.4km run time:
+
+      <main>
+        <div className="min-h-screen grid place-items-center">
+          <div className="relative w-full max-w-md">
+            <h1 className="text-2xl font-bold mb-4">All-in-one 2.4km App 🏃‍♂️</h1>
+            <p className="mb-4">
+              {" "}
+              Made by <a href="https://danielching.me">Daniel Ching</a>
+            </p>
+            <h2 className="text-xl font-bold mb-4">
+              Enter your 2.4km run time:
             </h2>
-              <form onSubmit={handleSubmit}>
-                <div className="mb-5">
-                  <label htmlFor="minutes" className="block mb-2">
-                    Minutes:
+            <form onSubmit={handleSubmit}>
+              <div className="mb-5">
+                <label htmlFor="minutes" className="block mb-2">
+                  Minutes:
                 </label>
-                  <input
-                    type="number"
-                    id="minutes"
-                    name="minutes"
-                    value={minutes}
-                    onChange={(e) => setMinutes(e.target.value)}
-                    className="w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    required
-                  />
-                </div>
-                <div className="mb-5">
-                  <label htmlFor="seconds" className="block mb-2">
-                    Seconds:
+                <input
+                  type="number"
+                  id="minutes"
+                  name="minutes"
+                  value={minutes}
+                  onChange={(e) => setMinutes(e.target.value)}
+                  className="w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  required
+                />
+              </div>
+              <div className="mb-5">
+                <label htmlFor="seconds" className="block mb-2">
+                  Seconds:
                 </label>
-                  <input
-                    type="number"
-                    id="seconds"
-                    name="seconds"
-                    value={seconds}
-                    onChange={(e) => setSeconds(e.target.value)}
-                    className="w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    required
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full px-3 py-4 text-white bg-blue-500 hover:bg-blue-600 rounded-md focus:bg-blue-600 focus:outline-none"
-                >
-                  Calculate Cumulative Lap Times
+                <input
+                  type="number"
+                  id="seconds"
+                  name="seconds"
+                  value={seconds}
+                  onChange={(e) => setSeconds(e.target.value)}
+                  className="w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full px-3 py-4 text-white bg-blue-500 hover:bg-blue-600 rounded-md focus:bg-blue-600 focus:outline-none"
+              >
+                Calculate Cumulative Lap Times
               </button>
-              </form>
-              {lapTimes.length > 0 && (
+              <button
+                type="button"
+                onClick={handleShowPaces}
+                className="w-full mt-4 px-3 py-4 text-white bg-green-500 hover:bg-green-600 rounded-md focus:bg-green-600 focus:outline-none"
+              >
+                Show Training Paces
+              </button>
+            </form>
+            {showLapTimes && lapTimes.length > 0 && (
+              <div>
                 <div className="mt-6">
                   <h2 className="text-xl font-bold mb-4">
                     Cumulative Lap Times:
-                </h2>
+                  </h2>
                   <ul className="list-disc pl-5">
                     {lapTimes.map(({ lap, time }) => {
                       const minutes = Math.floor(time / 60);
@@ -132,34 +166,61 @@ export default function Home() {
                     })}
                   </ul>
                 </div>
-              )}
-              {criticalVelocityPace &&
-                vo2MaxPace &&
-                easyPace &&
-                thresholdPace && (
+                <button
+                  onClick={toggleTips}
+                  className="w-full mt-4 px-3 py-4 text-white bg-green-500 hover:bg-green-600 rounded-md focus:bg-green-600 focus:outline-none"
+                >
+                  Tips for runners
+                </button>
+
+                {showTips && (
                   <div className="mt-6">
                     <h2 className="text-xl font-bold mb-4">
-                      Training Paces (per km):
-                  </h2>
-                    <p className="font-bold mb-2 mt-4">Easy Pace:</p>
-                    {easyPace.minutes} min {easyPace.seconds} sec
-                    <p className="font-bold mb-2 mt-4">Critical Velocity Pace:</p>
-                    <p>
-                      {criticalVelocityPace.minutes} min{" "}
-                      {criticalVelocityPace.seconds} sec
-                  </p>
-                    <p className="font-bold mb-2 mt-4">Threshold Pace:</p>
-                    {thresholdPace.minutes} min {thresholdPace.seconds} sec
-                    <p className="font-bold mb-2 mt-4">Vo2 Max / 2.4km Pace:</p>
-                    <p>
-                      {vo2MaxPace.minutes} min {vo2MaxPace.seconds} sec
-                  </p>
+                      Tips for Runners:
+                    </h2>
+                    <ul className="list-disc pl-5">
+                      <li>
+                        Pace yourself! If you go out too hard, you will surely
+                        die.
+                      </li>
+                      <li>Relax through the pain. Don't fight it.</li>
+                      <li>Focus each 400m at a time.</li>
+                      <li>Work together, chase people down.</li>
+                      <li>Carbohydrate load (add rice) one day before!</li>
+                    </ul>
                   </div>
                 )}
-            </div>
+              </div>
+            )}
+            {showPaces &&
+              criticalVelocityPace &&
+              vo2MaxPace &&
+              easyPace &&
+              thresholdPace && (
+                <div className="mt-6">
+                  <h2 className="text-xl font-bold mb-4">
+                    Training Paces (per km):
+                  </h2>
+                  <p className="font-bold mb-2 mt-4">Easy Pace:</p>
+                  {easyPace.minutes} min {easyPace.seconds} sec
+                  <p className="font-bold mb-2 mt-4">Tempo Pace:</p>
+                  {tempoPace.minutes} min {tempoPace.seconds} sec
+                  <p className="font-bold mb-2 mt-4">Threshold Pace:</p>
+                  {thresholdPace.minutes} min {thresholdPace.seconds} sec
+                  <p className="font-bold mb-2 mt-4">Critical Velocity Pace:</p>
+                  <p>
+                    {criticalVelocityPace.minutes} min{" "}
+                    {criticalVelocityPace.seconds} sec
+                  </p>
+                  <p className="font-bold mb-2 mt-4">Vo2 Max / 2.4km Pace:</p>
+                  <p>
+                    {vo2MaxPace.minutes} min {vo2MaxPace.seconds} sec
+                  </p>
+                </div>
+              )}
           </div>
-        </main>
-
+        </div>
+      </main>
     </>
   );
 }
