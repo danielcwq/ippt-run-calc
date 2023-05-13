@@ -97,11 +97,12 @@ export default function Home() {
       <main>
         <div className="min-h-screen grid place-items-center">
           <div className="relative w-full max-w-md p-8">
-            <h1 className="text-2xl font-bold mb-4">All-in-one 2.4km App 🏃‍♂️</h1>
             <p className="mb-4">
               {" "}
               Made by <a href="https://danielching.me">Daniel Ching</a>
             </p>
+            <h1 className="text-2xl font-bold mb-4">All-in-one 2.4km App 🏃‍♂️</h1>
+
             <h2 className="text-xl font-bold mb-4">
               Enter your 2.4km run time:
             </h2>
@@ -148,6 +149,29 @@ export default function Home() {
                 Show Training Paces
               </button>
             </form>
+            <div className=" ">
+              <h2 className="text-xl font-bold mt-4">Articles:</h2>
+              <ul className="list-disc pl-5">
+                <li>
+                  <a
+                    href="https://betterhumans.pub/how-to-get-good-at-2-4km-a-comprehensive-guide-85e9669ee19c"
+                    target="_blank"
+                    className="hover:underline"
+                  >
+                    How to get good at 2.4km: A comprehensive guide
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://medium.com/better-humans/preventing-overtraining-achieving-sustainable-growth-c47fcc6c2d7f"
+                    target="_blank"
+                    className="hover:underline"
+                  >
+                    On Sustainable Training
+                  </a>
+                </li>
+              </ul>
+            </div>
             {showLapTimes && lapTimes.length > 0 && (
               <div>
                 <div className="mt-6">
